@@ -92,7 +92,13 @@ namespace UIInfoSuite2.UIElements
         #region Logic
         private void UpdateRobinBuindingStatusData()
         {
-            Building buildingUnderConstruction = Game1.getFarm().getBuildingUnderConstruction();
+            Farm? farm = Game1.getFarm();
+            if (farm == null)
+            {
+                ModEntry.MonitorObject.Log($"{this.GetType().Name}: Could not find farm. Building status may be incorrect.", LogLevel.Warn);
+            }
+
+            Building? buildingUnderConstruction = farm?.getBuildingUnderConstruction();
             if (buildingUnderConstruction is null)
             {
                 _IsBuildingInProgress = false;
