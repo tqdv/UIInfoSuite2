@@ -14,7 +14,7 @@ steps:
       - event: push
         branch: ci-*
 
-  prepare-artifacts:
+  prepare_artifacts:
     image: busybox
     commands:
       - cp UIInfoSuite2/bin/Release/*/UIInfoSuite2*.zip "UIInfoSuite2-v${CI_COMMIT_TAG}.zip"
