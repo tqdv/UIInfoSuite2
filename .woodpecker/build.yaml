@@ -1,0 +1,17 @@
+workspace:
+  base: /code
+  path: ""
+
+steps:
+  build:
+    image: quay.kawa.tf/tqdv/smapi-mod
+    commands:
+      - dotnet build -c Release
+  publish:
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: github_api_key
+      files: UIInfoSuite2/bin/Release/*/UIInfoSuite2*.zip
+      title: ${CI_COMMIT_BRANCH}
+      prerelease: true
