@@ -6,6 +6,7 @@ steps:
   build:
     image: quay.kawa.tf/tqdv/smapi-mod:3.18.4
     commands:
+      - cp .woodpecker/files/UIInfoSuite2.csproj.local UIInfoSuite2/UIInfoSuite2.csproj.local
       - dotnet build -c Release
     when:
       - event: [push, tag, manual]
