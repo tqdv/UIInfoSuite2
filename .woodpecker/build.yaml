@@ -4,9 +4,11 @@ workspace:
 
 steps:
   build:
-    image: quay.kawa.tf/tqdv/smapi-mod
+    image: quay.kawa.tf/tqdv/smapi-mod:3.18.4
     commands:
       - dotnet build -c Release
+    when:
+      - event: [push, tag, manual]
   publish:
     image: plugins/github-release
     settings:
@@ -15,3 +17,5 @@ steps:
       files: UIInfoSuite2/bin/Release/*/UIInfoSuite2*.zip
       title: ${CI_COMMIT_BRANCH}
       prerelease: true
+    when:
+      - event: [push, tag, manual]
