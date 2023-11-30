@@ -243,7 +243,7 @@ namespace UIInfoSuite2.UIElements
 
                 bool notShippedYet = (hoveredObject != null
                     && hoveredObject.countsForShippedCollection()
-                    && !Game1.player.basicShipped.ContainsKey(hoveredObject.ParentSheetIndex)
+                    && !Game1.player.basicShipped.ContainsKey(hoveredObject.ItemId)
                     && hoveredObject.Type != "Fish");
                 if (notShippedYet && hoveredObject != null && ModEntry.DGA.IsCustomObject(hoveredObject, out var dgaHelper))
                 {
@@ -260,10 +260,10 @@ namespace UIInfoSuite2.UIElements
                         // This means that DGA items do not (yet) count for the "Full Shipment" achievement even though they appear in the collections page.
                         
                         // Nonetheless, show the icon if that item is still hidden in the collections page.
-                        int dgaId = dgaHelper.GetDgaObjectFakeId(hoveredObject);
+                        string dgaId = dgaHelper.GetDgaObjectFakeId(hoveredObject);
                         string t = hoveredObject.Type;
                         bool inCollectionsPage = !(t.Contains("Arch") || t.Contains("Fish") || t.Contains("Mineral") || t.Contains("Cooking"))
-                            && StardewValley.Object.isPotentialBasicShippedCategory(dgaId, hoveredObject.Category.ToString());
+                            && StardewValley.Object.isPotentialBasicShippedCategory(dgaId, hoveredObject.Category);
                             
                         notShippedYet = inCollectionsPage && !Game1.player.basicShipped.ContainsKey(dgaId);
                     }

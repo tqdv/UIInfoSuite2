@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,21 +14,6 @@ namespace UIInfoSuite2.Infrastructure
 {
     public static class Tools
     {
-        public static void CreateSafeDelayedDialogue(string dialogue, int timer)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                Thread.Sleep(timer);
-
-                do
-                {
-                    Thread.Sleep(TimeSpan.FromSeconds(1));
-                }
-                while (Game1.activeClickableMenu is GameMenu);
-                Game1.setDialogue(dialogue, true);
-            });
-        }
-
         public static int GetWidthInPlayArea()
         {
             if (Game1.isOutdoorMapSmallerThanViewport())
@@ -60,12 +46,13 @@ namespace UIInfoSuite2.Infrastructure
         {
             if (item is SObject seedsObject
                 && seedsObject.Category == StardewValley.Object.SeedsCategory
-                && seedsObject.ParentSheetIndex != Crop.mixedSeedIndex)
+                && seedsObject.ItemId != Crop.mixedSeedsId)
             {
                 if (seedsObject.isSapling())
                 {
-                    var tree = new StardewValley.TerrainFeatures.FruitTree(seedsObject.ParentSheetIndex);
-                    return new SObject(tree.indexOfFruit.Value, 1);
+                    var tree = new StardewValley.TerrainFeatures.FruitTree(seedsObject.ItemId);
+                    // TODO 1.6: It looks like 1.6 supports the idea of fruit tree having more than one kind of fruit.
+                    return new SObject(tree.GetData().Fruit.First().ItemId, 1);
                 }
                 else if (ModEntry.DGA.IsCustomObject(item, out var dgaHelper))
                 {
@@ -91,7 +78,8 @@ namespace UIInfoSuite2.Infrastructure
                 }
                 else
                 {
-                    var crop = new Crop(seedsObject.ParentSheetIndex, 0, 0);
+                    // TODO 1.6: This may not be safe in 1.6 as it looks like it straight up thinks about drawing it.
+                    var crop = new Crop(seedsObject.ItemId, 0, 0, Game1.getFarm());
                     return new SObject(crop.indexOfHarvest.Value, 1);
                 }
             } else {
@@ -142,8 +130,7 @@ namespace UIInfoSuite2.Infrastructure
 
             if (Game1.activeClickableMenu is GameMenu gameMenu && gameMenu.GetCurrentPage() is InventoryPage inventory)
             {
-                FieldInfo hoveredItemField = typeof(InventoryPage).GetField("hoveredItem", BindingFlags.Instance | BindingFlags.NonPublic);
-                hoverItem = hoveredItemField.GetValue(inventory) as Item;
+                hoverItem = inventory.hoveredItem;
             }
 
             if (Game1.activeClickableMenu is ItemGrabMenu itemMenu)

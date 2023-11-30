@@ -79,9 +79,7 @@ namespace UIInfoSuite2.UIElements
                     if (menu is SocialPage page)
                     {
                         _socialPage = page;
-                        _friendNames = _socialPage.names
-                            .Select(name => name.ToString())
-                            .ToArray();
+                        _friendNames = _socialPage.GetAllNpcs().Select(n => n.Name).ToArray();
                         break;
                     }
                 }
@@ -102,7 +100,8 @@ namespace UIInfoSuite2.UIElements
                 int yPosition = Game1.activeClickableMenu.yPositionOnScreen + 130 + yOffset;
                 yOffset += 112;
                 string nextName = _friendNames[i];
-                if (_socialPage.getFriendship(nextName).GiftsToday != 0 && _socialPage.getFriendship(nextName).GiftsThisWeek < 2)
+                var data = Game1.player.friendshipData[nextName];
+                if (data.GiftsToday != 0 && data.GiftsThisWeek < 2)
                 {
                     Game1.spriteBatch.Draw(
                         Game1.mouseCursors,

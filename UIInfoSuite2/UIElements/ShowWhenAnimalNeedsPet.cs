@@ -6,6 +6,7 @@ using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Characters;
+using StardewValley.GameData.FarmAnimals;
 using StardewValley.Locations;
 using StardewValley.Network;
 using System;
@@ -104,11 +105,12 @@ namespace UIInfoSuite2.UIElements
             {
                 foreach (var animal in animalsInCurrentLocation.Pairs)
                 {
-                    if (animal.Value.harvestType.Value != FarmAnimal.layHarvestType &&
+                    FarmAnimalHarvestType? harvestType = animal.Value.GetHarvestType();
+                    if (harvestType == FarmAnimalHarvestType.DropOvernight &&
                         !animal.Value.IsEmoting &&
-                        animal.Value.currentProduce.Value != 430 &&
-                        animal.Value.currentProduce.Value > 0 &&
-                        animal.Value.age.Value >= animal.Value.ageWhenMature.Value)
+                        animal.Value.currentProduce.Value != "430" && // 430 is truffle
+                        animal.Value.currentProduce.Value != null &&
+                        animal.Value.age.Value >= animal.Value.GetAnimalData().DaysToMature)
                     {
                         Vector2 positionAboveAnimal = GetPetPositionAboveAnimal(animal.Value);
                         positionAboveAnimal.Y += (float)(Math.Sin(Game1.currentGameTime.TotalGameTime.TotalMilliseconds / 300.0 + animal.Value.Name.GetHashCode()) * 5.0);
@@ -123,17 +125,18 @@ namespace UIInfoSuite2.UIElements
                             SpriteEffects.None,
                             1f);
 
-                        Rectangle sourceRectangle = GameLocation.getSourceRectForObject(animal.Value.currentProduce.Value);
-                        Game1.spriteBatch.Draw(
-                            Game1.objectSpriteSheet,
-                            Utility.ModifyCoordinatesForUIScale(new Vector2(positionAboveAnimal.X + 28f, positionAboveAnimal.Y + 8f)),
-                            sourceRectangle,
-                            Color.White * 0.9f,
-                            0.0f,
-                            Vector2.Zero,
-                            2.2f,
-                            SpriteEffects.None,
-                            1f);
+                        // TODO 1.6 -- not sure what to do here
+                        //Rectangle sourceRectangle = GameLocation.getSourceRectForObject(animal.Value.currentProduce.Value);
+                        //Game1.spriteBatch.Draw(
+                        //    Game1.objectSpriteSheet,
+                        //    Utility.ModifyCoordinatesForUIScale(new Vector2(positionAboveAnimal.X + 28f, positionAboveAnimal.Y + 8f)),
+                        //    sourceRectangle,
+                        //    Color.White * 0.9f,
+                        //    0.0f,
+                        //    Vector2.Zero,
+                        //    2.2f,
+                        //    SpriteEffects.None,
+                        //    1f);
                     }
                 }
             }
