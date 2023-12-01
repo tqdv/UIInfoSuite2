@@ -294,10 +294,7 @@ namespace UIInfoSuite2.UIElements
             //The cursor needs to show up in front of the character faces
             Tools.DrawMouseCursor();
 
-            string hoverText = (string)typeof(MapPage)
-                .GetField("hoverText", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(gameMenu.pages[gameMenu.currentTab]);
-
+            var hoverText = ((MapPage)(gameMenu.pages[gameMenu.currentTab])).hoverText;
             IClickableMenu.drawHoverText(Game1.spriteBatch, hoverText, Game1.smallFont);
         }
 

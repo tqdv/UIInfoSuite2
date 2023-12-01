@@ -343,7 +343,13 @@ namespace UIInfoSuite2.UIElements
         {
             if (crop.indexOfHarvest is not null)
             {
+                Console.WriteLine($"GetCropHarvestName({crop.GetData().HarvestItemId}");
                 string itemId = crop.isWildSeedCrop() ? crop.whichForageCrop.Value : crop.indexOfHarvest.Value;
+                Console.WriteLine($"GetCropHarvestName() itemId={itemId} GetData().HarvestItemId={crop.GetData().HarvestItemId}");
+                if (itemId is null)
+                {
+                    itemId = crop.GetData().HarvestItemId;
+                }
                 if (!_indexOfCropNames.TryGetValue(itemId, out string? harvestName)) {
                     harvestName = new StardewValley.Object(itemId, 1).DisplayName;
                     _indexOfCropNames.Add(itemId, harvestName);

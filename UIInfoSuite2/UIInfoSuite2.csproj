@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>2.0.0</Version>
+    <Version>3.0.0</Version>
     <RootNamespace>UIInfoSuite</RootNamespace>
 
     <TranslationClassBuilder_AddGetByKey>true</TranslationClassBuilder_AddGetByKey>
-      <!-- EnableHarmony>true</EnableHarmony -->
   </PropertyGroup>
 
   <ItemGroup>
