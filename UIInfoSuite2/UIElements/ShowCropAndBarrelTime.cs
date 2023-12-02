@@ -343,13 +343,8 @@ namespace UIInfoSuite2.UIElements
         {
             if (crop.indexOfHarvest is not null)
             {
-                Console.WriteLine($"GetCropHarvestName({crop.GetData().HarvestItemId}");
-                string itemId = crop.isWildSeedCrop() ? crop.whichForageCrop.Value : crop.indexOfHarvest.Value;
-                Console.WriteLine($"GetCropHarvestName() itemId={itemId} GetData().HarvestItemId={crop.GetData().HarvestItemId}");
-                if (itemId is null)
-                {
-                    itemId = crop.GetData().HarvestItemId;
-                }
+                // If you look at Crop.cs in the decompiled sources, it seems that there's a special case for spring onions - that's what the =="1" is about.
+                string itemId = crop.whichForageCrop.Value == "1" ? "399" : (crop.isWildSeedCrop() ? crop.whichForageCrop.Value : crop.indexOfHarvest.Value);
                 if (!_indexOfCropNames.TryGetValue(itemId, out string? harvestName)) {
                     harvestName = new StardewValley.Object(itemId, 1).DisplayName;
                     _indexOfCropNames.Add(itemId, harvestName);
