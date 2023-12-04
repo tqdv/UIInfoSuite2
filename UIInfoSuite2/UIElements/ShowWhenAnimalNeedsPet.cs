@@ -7,6 +7,7 @@ using StardewModdingAPI.Utilities;
 using StardewValley;
 using StardewValley.Characters;
 using StardewValley.GameData.FarmAnimals;
+using StardewValley.ItemTypeDefinitions;
 using StardewValley.Locations;
 using StardewValley.Network;
 using System;
@@ -125,10 +126,11 @@ namespace UIInfoSuite2.UIElements
                             SpriteEffects.None,
                             1f);
 
-                        // TODO 1.6 -- not sure what to do here
-                        Rectangle sourceRectangle = GameLocation.getSourceRectForObject(int.Parse(animal.Value.currentProduce.Value));
+                        string produceItemId = animal.Value.currentProduce.Value;
+                        var produceData = ItemRegistry.GetData(produceItemId);
+                        Rectangle sourceRectangle = produceData.GetSourceRect();
                         Game1.spriteBatch.Draw(
-                            Game1.objectSpriteSheet,
+                            produceData.GetTexture(),
                             Utility.ModifyCoordinatesForUIScale(new Vector2(positionAboveAnimal.X + 28f, positionAboveAnimal.Y + 8f)),
                             sourceRectangle,
                             Color.White * 0.9f,
