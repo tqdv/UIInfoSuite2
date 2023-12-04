@@ -106,7 +106,7 @@ namespace UIInfoSuite2.UIElements
                 foreach (var animal in animalsInCurrentLocation.Pairs)
                 {
                     FarmAnimalHarvestType? harvestType = animal.Value.GetHarvestType();
-                    if (harvestType == FarmAnimalHarvestType.DropOvernight &&
+                    if (harvestType != FarmAnimalHarvestType.DropOvernight &&
                         !animal.Value.IsEmoting &&
                         animal.Value.currentProduce.Value != "430" && // 430 is truffle
                         animal.Value.currentProduce.Value != null &&
@@ -126,17 +126,17 @@ namespace UIInfoSuite2.UIElements
                             1f);
 
                         // TODO 1.6 -- not sure what to do here
-                        //Rectangle sourceRectangle = GameLocation.getSourceRectForObject(animal.Value.currentProduce.Value);
-                        //Game1.spriteBatch.Draw(
-                        //    Game1.objectSpriteSheet,
-                        //    Utility.ModifyCoordinatesForUIScale(new Vector2(positionAboveAnimal.X + 28f, positionAboveAnimal.Y + 8f)),
-                        //    sourceRectangle,
-                        //    Color.White * 0.9f,
-                        //    0.0f,
-                        //    Vector2.Zero,
-                        //    2.2f,
-                        //    SpriteEffects.None,
-                        //    1f);
+                        Rectangle sourceRectangle = GameLocation.getSourceRectForObject(int.Parse(animal.Value.currentProduce.Value));
+                        Game1.spriteBatch.Draw(
+                            Game1.objectSpriteSheet,
+                            Utility.ModifyCoordinatesForUIScale(new Vector2(positionAboveAnimal.X + 28f, positionAboveAnimal.Y + 8f)),
+                            sourceRectangle,
+                            Color.White * 0.9f,
+                            0.0f,
+                            Vector2.Zero,
+                            2.2f,
+                            SpriteEffects.None,
+                            1f);
                     }
                 }
             }
