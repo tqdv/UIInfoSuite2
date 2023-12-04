@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.GameData.Crops;
 using StardewValley.Menus;
+using StardewValley.TerrainFeatures;
 using SObject = StardewValley.Object;
 
 namespace UIInfoSuite2.Infrastructure
@@ -45,14 +47,13 @@ namespace UIInfoSuite2.Infrastructure
         public static SObject? GetHarvest(Item item)
         {
             if (item is SObject seedsObject
-                && seedsObject.Category == StardewValley.Object.SeedsCategory
+                && seedsObject.Category == SObject.SeedsCategory
                 && seedsObject.ItemId != Crop.mixedSeedsId)
             {
-                if (seedsObject.isSapling())
+                if (seedsObject.IsFruitTreeSapling() && FruitTree.TryGetData(item.ItemId, out var fruitTreeData))
                 {
-                    var tree = new StardewValley.TerrainFeatures.FruitTree(seedsObject.ItemId);
                     // TODO 1.6: It looks like 1.6 supports the idea of fruit tree having more than one kind of fruit.
-                    return new SObject(tree.GetData().Fruit.First().ItemId, 1);
+                    return ItemRegistry.Create<SObject>(fruitTreeData.Fruit[0].ItemId);
                 }
                 else if (ModEntry.DGA.IsCustomObject(item, out var dgaHelper))
                 {
@@ -76,15 +77,13 @@ namespace UIInfoSuite2.Infrastructure
                         return null;
                     }
                 }
-                else
+                else if (Crop.TryGetData(item.ItemId, out CropData cropData) && cropData.HarvestItemId is not null)
                 {
-                    // TODO 1.6: This may not be safe in 1.6 as it looks like it straight up thinks about drawing it.
-                    var crop = new Crop(seedsObject.ItemId, 0, 0, Game1.getFarm());
-                    return new SObject(crop.indexOfHarvest.Value, 1);
+                    return ItemRegistry.Create<SObject>(cropData.HarvestItemId);
                 }
-            } else {
-                return null;
             }
+
+            return null;
         }
 
         public static int GetHarvestPrice(Item item)
@@ -122,7 +121,7 @@ namespace UIInfoSuite2.Infrastructure
                 {
                     if (menu is Toolbar toolbar)
                     {
-                        FieldInfo hoverItemField = typeof(Toolbar).GetField("hoverItem", BindingFlags.Instance | BindingFlags.NonPublic);
+                        FieldInfo hoverItemField = typeof(Toolbar).GetField("hoverItem", BindingFlags.Instance | BindingFlags.NonPublic)!;
                         hoverItem = hoverItemField.GetValue(toolbar) as Item;
                     }
                 }
