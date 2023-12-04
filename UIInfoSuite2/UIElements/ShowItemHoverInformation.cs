@@ -18,7 +18,8 @@ namespace UIInfoSuite2.UIElements
 {
     internal class ShowItemHoverInformation : IDisposable
     {
-        private readonly Dictionary<string, List<KeyValuePair<int, int>>> _prunedRequiredBundles = new();
+        private record ItemAndQuality(string qualifiedItemId, int quality);
+        private readonly Dictionary<string, List<ItemAndQuality>> _prunedRequiredBundles = new();
         private readonly ClickableTextureComponent _bundleIcon =
             new(
                 new Rectangle(0, 0, Game1.tileSize, Game1.tileSize),
@@ -188,16 +189,17 @@ namespace UIInfoSuite2.UIElements
                             ? bundleInfo[0]
                             : bundleInfo[^1];
                         string[] bundleValues = bundleInfo[2].Split(' ');
-                        List<KeyValuePair<int, int>> source = new List<KeyValuePair<int, int>>();
+                        List<ItemAndQuality> source = new();
 
                         for (int i = 0; i < bundleValues.Length; i += 3)
                         {
-                            int bundleValue = bundleValues[i].SafeParseInt32();
+                            string bundleValue = bundleValues[i];
                             int quality = bundleValues[i + 2].SafeParseInt32();
-                            if (bundleValue != -1 &&
+                            if (bundleValue != "-1" &&
                                 !_communityCenter.bundles[bundleNumber][i / 3])
                             {
-                                source.Add(new KeyValuePair<int, int>(bundleValue, quality));
+                                // 1.6ism - we're presuming that all bundles will always be Objects
+                                source.Add(new ItemAndQuality("(O)"+bundleValue, quality));
                             }
                         }
 
@@ -275,12 +277,11 @@ namespace UIInfoSuite2.UIElements
                 }
 
                 string? requiredBundleName = null;
-                // Bundle items must be "small" objects. This avoids marking other kinds of objects as needed, such as Chest (id 130), Recycling Machine (id 20), etc...
-                if (hoveredObject != null && !hoveredObject.bigCraftable.Value && hoveredObject is not Furniture)
+                if (hoveredObject != null)
                 {
                     foreach (var requiredBundle in _prunedRequiredBundles)
                     {
-                        if (requiredBundle.Value.Any(itemQuality => itemQuality.Key == hoveredObject.ParentSheetIndex && hoveredObject.Quality >= itemQuality.Value))
+                        if (requiredBundle.Value.Any(itemQuality => itemQuality.qualifiedItemId == hoveredObject.QualifiedItemId && hoveredObject.Quality >= itemQuality.quality))
                         {
                             requiredBundleName = requiredBundle.Key;
                             break;
