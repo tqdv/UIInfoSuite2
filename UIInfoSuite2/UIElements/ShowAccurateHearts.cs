@@ -85,7 +85,7 @@ namespace UIInfoSuite2.UIElements
                     if (menu is SocialPage page)
                     {
                         _socialPage = page;
-                        _friendNames = _socialPage.GetAllNpcs().Select(n => n.Name).ToArray();
+                        _friendNames = _socialPage.SocialEntries.Select(n => n.InternalName).ToArray();
                         break;
                     }
                 }
@@ -97,8 +97,8 @@ namespace UIInfoSuite2.UIElements
             int slotPosition = (int)typeof(SocialPage)
                                 .GetField(
                                     "slotPosition",
-                                    BindingFlags.Instance | BindingFlags.NonPublic)
-                                    .GetValue(_socialPage);
+                                    BindingFlags.Instance | BindingFlags.NonPublic)!
+                                .GetValue(_socialPage)!;
             int yOffset = 0;
 
             for (int i = slotPosition; i < slotPosition + 5 && i < _friendNames.Length; ++i)
