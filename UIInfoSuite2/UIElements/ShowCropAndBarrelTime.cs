@@ -115,6 +115,7 @@ namespace UIInfoSuite2.UIElements
             {
                 int wheatCount = 0;
                 int beetCount = 0;
+                int unmilledriceCount = 0;
 
                 foreach (Item item in currentTileBuilding.buildingChests[inputKey].Items)
                 {
@@ -123,22 +124,29 @@ namespace UIInfoSuite2.UIElements
                     {
                         switch (item.Name)
                         {
-                            case "Wheat": wheatCount = item.Stack; break;
-                            case "Beet": beetCount = item.Stack; break;
+                           case "Wheat": wheatCount += item.Stack; break;
+                           case "Beet": beetCount += item.Stack; break;
+                           case "Unmilled Rice": unmilledriceCount += item.Stack; break;
                         }
                     }
                 }
 
                 StringBuilder builder = new StringBuilder();
 
-                if (wheatCount > 0)
-                    builder.Append(wheatCount + " wheat");
+               if (wheatCount > 0)
+                    builder.Append($"{ItemRegistry.GetData("(O)262").DisplayName}:{wheatCount}");
 
                 if (beetCount > 0)
                 {
                     if (wheatCount > 0)
                         builder.Append(Environment.NewLine);
-                    builder.Append(beetCount + " beets");
+                    builder.Append($"{ItemRegistry.GetData("(O)284").DisplayName}:{beetCount}");
+                }
+                if (unmilledriceCount > 0)
+                {
+                    if (beetCount > 0 || wheatCount > 0)
+                        builder.Append(Environment.NewLine);
+                    builder.Append($"{ItemRegistry.GetData("(O)271").DisplayName}:{unmilledriceCount}");
                 }
 
                 if (builder.Length > 0)
