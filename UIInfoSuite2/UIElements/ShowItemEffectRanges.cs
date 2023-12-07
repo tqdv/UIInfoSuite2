@@ -153,7 +153,7 @@ namespace UIInfoSuite2.UIElements
                 else if (itemName.IndexOf("sprinkler", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     // Relative tile positions to the placable items locations - need to pass coordinates
-                    AddTilesToHighlightedArea(currentItem.GetSprinklerTiles(), (int)validTile.X, (int)validTile.Y);
+                    AddTilesToHighlightedArea(currentItem.GetSprinklerTiles());
 
                     similarObjects = GetSimilarObjectsInLocation("sprinkler");
                     foreach (StardewValley.Object next in similarObjects)
