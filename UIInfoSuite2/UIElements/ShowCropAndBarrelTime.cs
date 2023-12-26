@@ -297,7 +297,7 @@ namespace UIInfoSuite2.UIElements
                 else if (terrain is FruitTree tree)
                 {
                     string itemIdOfFruit = tree.GetData().Fruit.First().ItemId; // TODO 1.6: Might be broken because of more than one item.
-                    var text = new StardewValley.Object(itemIdOfFruit, 1).DisplayName;
+                    var text = ItemRegistry.GetData(itemIdOfFruit).DisplayName;
                     if (tree.daysUntilMature.Value > 0)
                     {
                         text += Environment.NewLine + tree.daysUntilMature.Value + " " +
