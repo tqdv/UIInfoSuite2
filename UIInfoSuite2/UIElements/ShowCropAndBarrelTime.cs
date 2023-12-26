@@ -349,7 +349,7 @@ namespace UIInfoSuite2.UIElements
 
         string? GetCropHarvestName(Crop crop)
         {
-            if (crop.indexOfHarvest is not null)
+            if (crop.indexOfHarvest.Value is not null)
             {
                 // If you look at Crop.cs in the decompiled sources, it seems that there's a special case for spring onions - that's what the =="1" is about.
                 string itemId = crop.whichForageCrop.Value == "1" ? "399" : (crop.isWildSeedCrop() ? crop.whichForageCrop.Value : crop.indexOfHarvest.Value);
