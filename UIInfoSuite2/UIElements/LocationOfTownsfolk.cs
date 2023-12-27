@@ -20,8 +20,8 @@ namespace UIInfoSuite2.UIElements
     internal class LocationOfTownsfolk : IDisposable
     {
         #region Properties
-        private SocialPage _socialPage;
-        private string[] _friendNames;
+        private SocialPage _socialPage = null!;
+        private string[] _friendNames = null!;
         private List<NPC> _townsfolk = new();
         private List<OptionsCheckbox> _checkboxes = new();
 
@@ -122,12 +122,12 @@ namespace UIInfoSuite2.UIElements
         #endregion
 
         #region Event subscriptions
-        private void OnMenuChanged(object sender, MenuChangedEventArgs e)
+        private void OnMenuChanged(object? sender, MenuChangedEventArgs e)
         {
             InitializeProperties();
         }
 
-        private void OnButtonPressed_ForSocialPage(object sender, ButtonPressedEventArgs e)
+        private void OnButtonPressed_ForSocialPage(object? sender, ButtonPressedEventArgs e)
         {
             if (Game1.activeClickableMenu is GameMenu && (e.Button == SButton.MouseLeft || e.Button == SButton.ControllerA || e.Button == SButton.ControllerX))
             {
@@ -135,14 +135,14 @@ namespace UIInfoSuite2.UIElements
             }
         }
 
-        private void OnRenderedActiveMenu_DrawSocialPageOptions(object sender, RenderedActiveMenuEventArgs e)
+        private void OnRenderedActiveMenu_DrawSocialPageOptions(object? sender, RenderedActiveMenuEventArgs e)
         {
             if (Game1.activeClickableMenu is GameMenu gameMenu && gameMenu.currentTab == 2)
             {
                 DrawSocialPageOptions();
             }
         }
-        private void OnRenderedActiveMenu_DrawNPCLocationsOnMap(object sender, RenderedActiveMenuEventArgs e)
+        private void OnRenderedActiveMenu_DrawNPCLocationsOnMap(object? sender, RenderedActiveMenuEventArgs e)
         {
             if (Game1.activeClickableMenu is GameMenu gameMenu && gameMenu.currentTab == 3)
             {
@@ -150,7 +150,7 @@ namespace UIInfoSuite2.UIElements
             }
         }
 
-        private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
+        private void OnUpdateTicked(object? sender, UpdateTickedEventArgs e)
         {
             if (!e.IsOneSecond || (Context.IsSplitScreen && Context.ScreenId != 0))
                 return;
@@ -208,8 +208,8 @@ namespace UIInfoSuite2.UIElements
         private void CheckSelectedBox(ButtonPressedEventArgs e)
         {
             int slotPosition = (int)typeof(SocialPage)
-                .GetField("slotPosition", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(_socialPage);
+                .GetField("slotPosition", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .GetValue(_socialPage)!;
 
             for (int i = slotPosition; i < slotPosition + 5; ++i)
             {
@@ -235,8 +235,8 @@ namespace UIInfoSuite2.UIElements
                 SocialPanelWidth, Game1.activeClickableMenu.height, false, true);
 
             int slotPosition = (int)typeof(SocialPage)
-                .GetField("slotPosition", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(_socialPage);
+                .GetField("slotPosition", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .GetValue(_socialPage)!;
             int yOffset = 0;
 
             for (int i = slotPosition; i < slotPosition + 5 && i < _friendNames.Length; ++i)
@@ -345,7 +345,7 @@ namespace UIInfoSuite2.UIElements
                 int areaWidth = locationName == "Town" ? 345 : 319;
                 int areaHeight = locationName == "Town" ? 330 : 261;
 
-                xTile.Map map = character.currentLocation.Map;
+                xTile.Map map = character.currentLocation!.Map;
 
                 float xScale = areaWidth / (float)map.DisplayWidth;
                 float yScale = areaHeight / (float)map.DisplayHeight;
@@ -365,18 +365,14 @@ namespace UIInfoSuite2.UIElements
         {
             foreach (var quest in Game1.player.questLog.Where(q => q.accepted.Value && q.dailyQuest.Value && !q.completed.Value))
             {
-                bool isQuestTarget = false;
-                switch (quest.questType.Value)
+                if ((quest is ItemDeliveryQuest idq && idq.target.Value == character.Name)
+                 || (quest is SlayMonsterQuest smq && smq.target.Value == character.Name)
+                 || (quest is FishingQuest fq && fq.target.Value == character.Name)
+                 || (quest is ResourceCollectionQuest rq && rq.target.Value == character.Name))
                 {
-                    case 3: isQuestTarget = (quest as ItemDeliveryQuest).target.Value == character.Name; break;
-                    case 4: isQuestTarget = (quest as SlayMonsterQuest).target.Value == character.Name; break;
-                    case 7: isQuestTarget = (quest as FishingQuest).target.Value == character.Name; break;
-                    case 10: isQuestTarget = (quest as ResourceCollectionQuest).target.Value == character.Name; break;
-                }
-
-                if (isQuestTarget)
                     Game1.spriteBatch.Draw(Game1.mouseCursors, new Vector2(x + 10, y - 12), new Rectangle(394, 495, 4, 10),
                         Color.White, 0.0f, Vector2.Zero, 3f, SpriteEffects.None, 1f);
+                }
             }
         }
 

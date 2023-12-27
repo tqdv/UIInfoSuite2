@@ -66,7 +66,6 @@ namespace UIInfoSuite2.Compatibility
         private class DgaFakeIdRetriever
         {
             private DynamicGameAssetsHelper DgaHelper { get; init; }
-            private bool? deterministicHashCodeIsCorrect = null;
 
             public DgaFakeIdRetriever(DynamicGameAssetsHelper dgaHelper)
             {
