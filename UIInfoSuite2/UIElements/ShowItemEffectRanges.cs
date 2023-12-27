@@ -54,6 +54,10 @@ namespace UIInfoSuite2.UIElements
             if (!e.IsMultipleOf(4))
                 return;
 
+            // Ticks can happen when the player reverts to the loading screen; defend against that.
+            if (Game1.currentLocation is null)
+                return;
+
             if (_mutex.WaitOne())
             {
                 try
