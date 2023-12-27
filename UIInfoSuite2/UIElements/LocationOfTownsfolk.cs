@@ -31,61 +31,61 @@ namespace UIInfoSuite2.UIElements
         private const int SocialPanelWidth = 190;
         private const int SocialPanelXOffset = 160;
 
-        private static readonly Dictionary<string, KeyValuePair<int, int>> _mapLocations = new()
+        private static readonly Dictionary<string, Vector2> _mapLocations = new()
         {
-            { "HarveyRoom", new KeyValuePair<int, int>(677, 304) },
-            { "BathHouse_Pool", new KeyValuePair<int, int>(576, 60) },
-            { "WizardHouseBasement", new KeyValuePair<int, int>(196, 352) },
-            { "BugLand", new KeyValuePair<int, int>(0, 0) },
-            { "Desert", new KeyValuePair<int, int>(75, 40) },
-            { "Cellar", new KeyValuePair<int, int>(470, 260) },
-            { "JojaMart", new KeyValuePair<int, int>(872, 280) },
-            { "LeoTreeHouse", new KeyValuePair<int, int>(744, 128) },
-            { "Tent", new KeyValuePair<int, int>(784, 128) },
-            { "HaleyHouse", new KeyValuePair<int, int>(652, 408) },
-            { "Hospital", new KeyValuePair<int, int>(677, 304) },
-            { "FarmHouse", new KeyValuePair<int, int>(470, 260) },
-            { "Farm", new KeyValuePair<int, int>(470, 260) },
-            { "ScienceHouse", new KeyValuePair<int, int>(732, 148) },
-            { "ManorHouse", new KeyValuePair<int, int>(768, 395) },
-            { "AdventureGuild", new KeyValuePair<int, int>(0, 0) },
-            { "SeedShop", new KeyValuePair<int, int>(696, 296) },
-            { "Blacksmith", new KeyValuePair<int, int>(852, 388) },
-            { "JoshHouse", new KeyValuePair<int, int>(740, 320) },
-            { "SandyHouse", new KeyValuePair<int, int>(40, 115) },
-            { "Tunnel", new KeyValuePair<int, int>(0, 0) },
-            { "CommunityCenter", new KeyValuePair<int, int>(692, 204) },
-            { "Backwoods", new KeyValuePair<int, int>(460, 156) },
-            { "ElliottHouse", new KeyValuePair<int, int>(826, 550) },
-            { "SebastianRoom", new KeyValuePair<int, int>(732, 148) },
-            { "BathHouse_Entry", new KeyValuePair<int, int>(576, 60) },
-            { "Greenhouse", new KeyValuePair<int, int>(370, 270) },
-            { "Sewer", new KeyValuePair<int, int>(380, 596) },
-            { "WizardHouse", new KeyValuePair<int, int>(196, 352) },
-            { "Trailer", new KeyValuePair<int, int>(780, 360) },
-            { "Trailer_Big", new KeyValuePair<int, int>(780, 360) },
-            { "Forest", new KeyValuePair<int, int>(80, 272) },
-            { "Woods", new KeyValuePair<int, int>(100, 272) },
-            { "WitchSwamp", new KeyValuePair<int, int>(0, 0) },
-            { "ArchaeologyHouse", new KeyValuePair<int, int>(892, 416) },
-            { "FishShop", new KeyValuePair<int, int>(844, 608) },
-            { "Saloon", new KeyValuePair<int, int>(714, 354) },
-            { "LeahHouse", new KeyValuePair<int, int>(452, 436) },
-            { "Town", new KeyValuePair<int, int>(680, 360) },
-            { "Mountain", new KeyValuePair<int, int>(762, 154) },
-            { "BusStop", new KeyValuePair<int, int>(516, 224) },
-            { "Railroad", new KeyValuePair<int, int>(644, 64) },
-            { "SkullCave", new KeyValuePair<int, int>(0, 0) },
-            { "BathHouse_WomensLocker", new KeyValuePair<int, int>(576, 60) },
-            { "Beach", new KeyValuePair<int, int>(790, 550) },
-            { "BathHouse_MensLocker", new KeyValuePair<int, int>(576, 60) },
-            { "Mine", new KeyValuePair<int, int>(880, 100) },
-            { "WitchHut", new KeyValuePair<int, int>(0, 0) },
-            { "AnimalShop", new KeyValuePair<int, int>(420, 392) },
-            { "SamHouse", new KeyValuePair<int, int>(612, 396) },
-            { "WitchWarpCave", new KeyValuePair<int, int>(0, 0) },
-            { "Club", new KeyValuePair<int, int>(60, 92) },
-            { "Sunroom", new KeyValuePair<int, int>(705, 304) }
+            { "HarveyRoom", new Vector2(677, 304) },
+            { "BathHouse_Pool", new Vector2(576, 60) },
+            { "WizardHouseBasement", new Vector2(196, 352) },
+            { "BugLand", new Vector2(0, 0) },
+            { "Desert", new Vector2(75, 40) },
+            { "Cellar", new Vector2(470, 260) },
+            { "JojaMart", new Vector2(872, 280) },
+            { "LeoTreeHouse", new Vector2(744, 128) },
+            { "Tent", new Vector2(784, 128) },
+            { "HaleyHouse", new Vector2(652, 408) },
+            { "Hospital", new Vector2(677, 304) },
+            { "FarmHouse", new Vector2(470, 260) },
+            { "Farm", new Vector2(470, 260) },
+            { "ScienceHouse", new Vector2(732, 148) },
+            { "ManorHouse", new Vector2(768, 395) },
+            { "AdventureGuild", new Vector2(0, 0) },
+            { "SeedShop", new Vector2(696, 296) },
+            { "Blacksmith", new Vector2(852, 388) },
+            { "JoshHouse", new Vector2(740, 320) },
+            { "SandyHouse", new Vector2(40, 115) },
+            { "Tunnel", new Vector2(0, 0) },
+            { "CommunityCenter", new Vector2(692, 204) },
+            { "Backwoods", new Vector2(460, 156) },
+            { "ElliottHouse", new Vector2(826, 550) },
+            { "SebastianRoom", new Vector2(732, 148) },
+            { "BathHouse_Entry", new Vector2(576, 60) },
+            { "Greenhouse", new Vector2(370, 270) },
+            { "Sewer", new Vector2(380, 596) },
+            { "WizardHouse", new Vector2(196, 352) },
+            { "Trailer", new Vector2(780, 360) },
+            { "Trailer_Big", new Vector2(780, 360) },
+            { "Forest", new Vector2(80, 272) },
+            { "Woods", new Vector2(100, 272) },
+            { "WitchSwamp", new Vector2(0, 0) },
+            { "ArchaeologyHouse", new Vector2(892, 416) },
+            { "FishShop", new Vector2(844, 608) },
+            { "Saloon", new Vector2(714, 354) },
+            { "LeahHouse", new Vector2(452, 436) },
+            { "Town", new Vector2(680, 360) },
+            { "Mountain", new Vector2(762, 154) },
+            { "BusStop", new Vector2(516, 224) },
+            { "Railroad", new Vector2(644, 64) },
+            { "SkullCave", new Vector2(0, 0) },
+            { "BathHouse_WomensLocker", new Vector2(576, 60) },
+            { "Beach", new Vector2(790, 550) },
+            { "BathHouse_MensLocker", new Vector2(576, 60) },
+            { "Mine", new Vector2(880, 100) },
+            { "WitchHut", new Vector2(0, 0) },
+            { "AnimalShop", new Vector2(420, 392) },
+            { "SamHouse", new Vector2(612, 396) },
+            { "WitchWarpCave", new Vector2(0, 0) },
+            { "Club", new Vector2(60, 92) },
+            { "Sunroom", new Vector2(705, 304) }
         };
         #endregion
 
@@ -300,41 +300,41 @@ namespace UIInfoSuite2.UIElements
 
         private static void DrawNPC(NPC character, List<string> namesToShow)
         {
-            KeyValuePair<int, int> location = GetMapCoordinatesForNPC(character);
+            Vector2? location = GetMapCoordinatesForNPC(character);
+            if (location is null)
+            {
+                return;
+            }
 
             Rectangle headShot = character.GetHeadShot();
             int xBase = Game1.activeClickableMenu.xPositionOnScreen - 158;
             int yBase = Game1.activeClickableMenu.yPositionOnScreen - 40;
-
-            int x = xBase + location.Key;
-            int y = yBase + location.Value;
+            var offsetLocation = location.Value + new Vector2(xBase, yBase);
 
             Color color = character.CurrentDialogue.Count <= 0 ? Color.Gray : Color.White;
-            ClickableTextureComponent textureComponent = new ClickableTextureComponent(character.Name, new Rectangle(x, y, 0, 0),
-                null, character.Name, character.Sprite.Texture, headShot, 2.3f);
-
             float headShotScale = 2f;
-            Game1.spriteBatch.Draw(character.Sprite.Texture, new Vector2(x, y), new Rectangle?(headShot),
+            Game1.spriteBatch.Draw(character.Sprite.Texture, offsetLocation, new Rectangle?(headShot),
                 color, 0.0f, Vector2.Zero, headShotScale, SpriteEffects.None, 1f);
 
             int mouseX = Game1.getMouseX();
             int mouseY = Game1.getMouseY();
-            if (mouseX >= x && mouseX <= x + headShot.Width * headShotScale && mouseY >= y && mouseY <= y + headShot.Height * headShotScale)
+            if (mouseX >= offsetLocation.X && mouseX - offsetLocation.X <= headShot.Width * headShotScale
+             && mouseY >= offsetLocation.Y && mouseY - offsetLocation.Y <= headShot.Height * headShotScale)
             {
                 namesToShow.Add(character.displayName);
             }
 
-            DrawQuestsForNPC(character, x, y);
+            DrawQuestsForNPC(character, (int)offsetLocation.X, (int)offsetLocation.Y);
         }
 
-        private static KeyValuePair<int, int> GetMapCoordinatesForNPC(NPC character)
+        private static Vector2? GetMapCoordinatesForNPC(NPC character)
         {
             string locationName = character.currentLocation?.Name ?? character.DefaultMap;
 
             // Ginger Island
             if (character.currentLocation is IslandLocation)
             {
-                return new KeyValuePair<int, int>(1104, 658);
+                return new Vector2(1104, 658);
             }
 
             // Scale Town and Forest
@@ -354,11 +354,11 @@ namespace UIInfoSuite2.UIElements
                 float scaledY = character.position.Y * yScale;
                 int xPos = (int)scaledX + xStart;
                 int yPos = (int)scaledY + yStart;
-                return new KeyValuePair<int, int>(xPos, yPos);
+                return new Vector2(xPos, yPos);
             }
 
             // Other known locations
-            return _mapLocations.SafeGet(locationName, new KeyValuePair<int, int>(0, 0));
+            return _mapLocations.SafeGet(locationName, new Vector2(0, 0));
         }
 
         private static void DrawQuestsForNPC(NPC character, int x, int y)
