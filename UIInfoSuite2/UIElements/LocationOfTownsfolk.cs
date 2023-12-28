@@ -32,62 +32,6 @@ namespace UIInfoSuite2.UIElements
         private const int SocialPanelWidth = 190;
         private const int SocialPanelXOffset = 160;
 
-        private static readonly Dictionary<string, Vector2> _mapLocations = new()
-        {
-            { "HarveyRoom", new Vector2(677, 304) },
-            { "BathHouse_Pool", new Vector2(576, 60) },
-            { "WizardHouseBasement", new Vector2(196, 352) },
-            { "BugLand", new Vector2(0, 0) },
-            { "Desert", new Vector2(75, 40) },
-            { "Cellar", new Vector2(470, 260) },
-            { "JojaMart", new Vector2(872, 280) },
-            { "LeoTreeHouse", new Vector2(744, 128) },
-            { "Tent", new Vector2(784, 128) },
-            { "HaleyHouse", new Vector2(652, 408) },
-            { "Hospital", new Vector2(677, 304) },
-            { "FarmHouse", new Vector2(470, 260) },
-            { "Farm", new Vector2(470, 260) },
-            { "ScienceHouse", new Vector2(732, 148) },
-            { "ManorHouse", new Vector2(768, 395) },
-            { "AdventureGuild", new Vector2(0, 0) },
-            { "SeedShop", new Vector2(696, 296) },
-            { "Blacksmith", new Vector2(852, 388) },
-            { "JoshHouse", new Vector2(740, 320) },
-            { "SandyHouse", new Vector2(40, 115) },
-            { "Tunnel", new Vector2(0, 0) },
-            { "CommunityCenter", new Vector2(692, 204) },
-            { "Backwoods", new Vector2(460, 156) },
-            { "ElliottHouse", new Vector2(826, 550) },
-            { "SebastianRoom", new Vector2(732, 148) },
-            { "BathHouse_Entry", new Vector2(576, 60) },
-            { "Greenhouse", new Vector2(370, 270) },
-            { "Sewer", new Vector2(380, 596) },
-            { "WizardHouse", new Vector2(196, 352) },
-            { "Trailer", new Vector2(780, 360) },
-            { "Trailer_Big", new Vector2(780, 360) },
-            { "Forest", new Vector2(80, 272) },
-            { "Woods", new Vector2(100, 272) },
-            { "WitchSwamp", new Vector2(0, 0) },
-            { "ArchaeologyHouse", new Vector2(892, 416) },
-            { "FishShop", new Vector2(844, 608) },
-            { "Saloon", new Vector2(714, 354) },
-            { "LeahHouse", new Vector2(452, 436) },
-            { "Town", new Vector2(680, 360) },
-            { "Mountain", new Vector2(762, 154) },
-            { "BusStop", new Vector2(516, 224) },
-            { "Railroad", new Vector2(644, 64) },
-            { "SkullCave", new Vector2(0, 0) },
-            { "BathHouse_WomensLocker", new Vector2(576, 60) },
-            { "Beach", new Vector2(790, 550) },
-            { "BathHouse_MensLocker", new Vector2(576, 60) },
-            { "Mine", new Vector2(880, 100) },
-            { "WitchHut", new Vector2(0, 0) },
-            { "AnimalShop", new Vector2(420, 392) },
-            { "SamHouse", new Vector2(612, 396) },
-            { "WitchWarpCave", new Vector2(0, 0) },
-            { "Club", new Vector2(60, 92) },
-            { "Sunroom", new Vector2(705, 304) }
-        };
         #endregion
 
         #region Lifecycle
@@ -301,16 +245,21 @@ namespace UIInfoSuite2.UIElements
 
         private static void DrawNPC(NPC character, List<string> namesToShow)
         {
-            Vector2? location = GetMapCoordinatesForNPC(character);
+            // Compare with the game code - MapPage.drawMiniPortraits
+
+            Vector2? location = GetMapCoordinatesForNPC(character); // location is the absolute position or null if the npc is not on the map
             if (location is null)
             {
                 return;
             }
 
             Rectangle headShot = character.GetHeadShot();
-            int xBase = Game1.activeClickableMenu.xPositionOnScreen - 158;
-            int yBase = Game1.activeClickableMenu.yPositionOnScreen - 40;
-            var offsetLocation = location.Value + new Vector2(xBase, yBase);
+            var mapPosition = WorldMapManager.GetPositionData(Game1.player.currentLocation, new Point((int)location.Value.X, (int)location.Value.Y)) ?? WorldMapManager.GetPositionData(Game1.getFarm(), Point.Zero);
+            var mapRegion = mapPosition.Region;
+            var mapBounds = mapRegion.GetMapPixelBounds();
+            var offsetLocation = new Vector2(location.Value.X + (float)mapBounds.X - headShot.Width, location.Value.Y + (float)mapBounds.Y - headShot.Height);
+            // NOTE!  This is the same as the game code, except that where we have 'headShot.Width', the game code has a constant 32.  I think that's
+            //  because the player face they draw is 32x32.  So we're keeping to the spirit.
 
             Color color = character.CurrentDialogue.Count <= 0 ? Color.Gray : Color.White;
             float headShotScale = 2f;
@@ -330,68 +279,25 @@ namespace UIInfoSuite2.UIElements
 
         private static Vector2? GetMapCoordinatesForNPC(NPC character)
         {
-            return (Game1.player.currentLocation is IslandLocation ? GetIslandMapCoordinatesForNPC(character) : GetValleyMapCoordinatesForNPC(character));
-        }
+            var playerNormalizedTile = new Point(Math.Max(0, Game1.player.TilePoint.X), Math.Max(0, Game1.player.TilePoint.Y));
+            MapAreaPosition playerMapAreaPosition = WorldMapManager.GetPositionData(Game1.player.currentLocation, playerNormalizedTile)
+                ?? WorldMapManager.GetPositionData(Game1.getFarm(), Point.Zero);
+            // ^^ Regarding that ?? clause...  If the player is in the farmhouse or barn or any building on the farm, GetPositionData is
+            //  going to return null.  Thus the fallback to pretending the player is on the farm.  However, it seems to me that
+            //  Game1.player.currentLocation.GetParentLocation() would be the safer long-term bet.  But rule number 1 of modding is this:
+            //  the game code is always right, even when it's wrong.
 
-        private static Vector2? GetIslandMapCoordinatesForNPC(NPC character)
-        {
-            // The main valley map has an inset for GI, but the valley map has no such inset.  So characters just don't get drawn on that map.
-            if (!(character.currentLocation is IslandLocation))
+            var characterNormalizedTile = new Point(Math.Max(0, character.TilePoint.X), Math.Max(0, character.TilePoint.Y));
+            MapAreaPosition characterMapAreaPosition = WorldMapManager.GetPositionData(character.currentLocation, characterNormalizedTile);
+
+            if (playerMapAreaPosition != null && characterMapAreaPosition != null && !(characterMapAreaPosition.Region.Id != playerMapAreaPosition.Region.Id))
+            {
+                return characterMapAreaPosition.GetMapPixelPosition(character.currentLocation, characterNormalizedTile);
+            }
+            else
             {
                 return null;
             }
-
-            // Adapted from MapPage.drawMiniPortraits
-
-            // this line is From MapPage.GetNormalizedPlayerTile -- looks irrelevant, really.
-            var normalizedTile = new Point(Math.Max(0, character.TilePoint.X), Math.Max(0, character.TilePoint.Y));
-            MapAreaPosition mapAreaPosition = WorldMapManager.GetPositionData(character.currentLocation, normalizedTile);
-
-            var mapPosition = WorldMapManager.GetPositionData(character.currentLocation, normalizedTile) ?? WorldMapManager.GetPositionData(Game1.getFarm(), Point.Zero);
-            var mapRegion = mapPosition.Region;
-            var mapBounds = mapRegion.GetMapPixelBounds();
-
-            //if (mapAreaPosition != null && !(mapAreaPosition.Region.Id != mapRegion.Id))
-            //{
-                Vector2 mapPixelPosition = mapAreaPosition.GetMapPixelPosition(character.currentLocation, normalizedTile);
-                // mapPixelPosition = new Vector2(mapPixelPosition.X + (float)mapBounds.X - 32f, mapPixelPosition.Y + (float)mapBounds.Y - 32f);
-            //}
-
-            return mapPixelPosition;
-        }
-
-        private static Vector2 GetValleyMapCoordinatesForNPC(NPC character)
-        {
-            string locationName = character.currentLocation?.Name ?? character.DefaultMap;
-
-            // Ginger Island
-            if (character.currentLocation is IslandLocation)
-            {
-                return new Vector2(1104, 658);
-            }
-
-            // Scale Town and Forest
-            if (locationName == "Town" || locationName == "Forest")
-            {
-                int xStart = locationName == "Town" ? 595 : 183;
-                int yStart = locationName == "Town" ? 163 : 378;
-                int areaWidth = locationName == "Town" ? 345 : 319;
-                int areaHeight = locationName == "Town" ? 330 : 261;
-
-                xTile.Map map = character.currentLocation!.Map;
-
-                float xScale = areaWidth / (float)map.DisplayWidth;
-                float yScale = areaHeight / (float)map.DisplayHeight;
-
-                float scaledX = character.position.X * xScale;
-                float scaledY = character.position.Y * yScale;
-                int xPos = (int)scaledX + xStart;
-                int yPos = (int)scaledY + yStart;
-                return new Vector2(xPos, yPos);
-            }
-
-            // Other known locations
-            return _mapLocations.SafeGet(locationName, new Vector2(0, 0));
         }
 
         private static void DrawQuestsForNPC(NPC character, int x, int y)
@@ -431,6 +337,6 @@ namespace UIInfoSuite2.UIElements
 
             Game1.spriteBatch.DrawString(Game1.smallFont, text, new Vector2(windowPos.X + 15, windowPos.Y + 15), Game1.textColor);
         }
-        #endregion
+#endregion
     }
 }
