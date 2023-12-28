@@ -6,6 +6,7 @@ using StardewValley;
 using StardewValley.Locations;
 using StardewValley.Menus;
 using StardewValley.Quests;
+using StardewValley.WorldMaps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -328,6 +329,38 @@ namespace UIInfoSuite2.UIElements
         }
 
         private static Vector2? GetMapCoordinatesForNPC(NPC character)
+        {
+            return (Game1.player.currentLocation is IslandLocation ? GetIslandMapCoordinatesForNPC(character) : GetValleyMapCoordinatesForNPC(character));
+        }
+
+        private static Vector2? GetIslandMapCoordinatesForNPC(NPC character)
+        {
+            // The main valley map has an inset for GI, but the valley map has no such inset.  So characters just don't get drawn on that map.
+            if (!(character.currentLocation is IslandLocation))
+            {
+                return null;
+            }
+
+            // Adapted from MapPage.drawMiniPortraits
+
+            // this line is From MapPage.GetNormalizedPlayerTile -- looks irrelevant, really.
+            var normalizedTile = new Point(Math.Max(0, character.TilePoint.X), Math.Max(0, character.TilePoint.Y));
+            MapAreaPosition mapAreaPosition = WorldMapManager.GetPositionData(character.currentLocation, normalizedTile);
+
+            var mapPosition = WorldMapManager.GetPositionData(character.currentLocation, normalizedTile) ?? WorldMapManager.GetPositionData(Game1.getFarm(), Point.Zero);
+            var mapRegion = mapPosition.Region;
+            var mapBounds = mapRegion.GetMapPixelBounds();
+
+            //if (mapAreaPosition != null && !(mapAreaPosition.Region.Id != mapRegion.Id))
+            //{
+                Vector2 mapPixelPosition = mapAreaPosition.GetMapPixelPosition(character.currentLocation, normalizedTile);
+                // mapPixelPosition = new Vector2(mapPixelPosition.X + (float)mapBounds.X - 32f, mapPixelPosition.Y + (float)mapBounds.Y - 32f);
+            //}
+
+            return mapPixelPosition;
+        }
+
+        private static Vector2 GetValleyMapCoordinatesForNPC(NPC character)
         {
             string locationName = character.currentLocation?.Name ?? character.DefaultMap;
 
