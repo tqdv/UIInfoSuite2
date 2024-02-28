@@ -263,9 +263,7 @@ namespace UIInfoSuite2.UIElements
                         
                         // Nonetheless, show the icon if that item is still hidden in the collections page.
                         string dgaId = dgaHelper.GetDgaObjectFakeId(hoveredObject);
-                        string t = hoveredObject.Type;
-                        bool inCollectionsPage = !(t.Contains("Arch") || t.Contains("Fish") || t.Contains("Mineral") || t.Contains("Cooking"))
-                            && StardewValley.Object.isPotentialBasicShippedCategory(dgaId, hoveredObject.Category);
+                        bool inCollectionsPage = StardewValley.Object.isPotentialBasicShipped(dgaId, hoveredObject.Category, hoveredObject.Type);
                             
                         notShippedYet = inCollectionsPage && !Game1.player.basicShipped.ContainsKey(dgaId);
                     }

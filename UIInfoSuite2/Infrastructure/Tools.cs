@@ -117,14 +117,7 @@ namespace UIInfoSuite2.Infrastructure
 
             if (Game1.activeClickableMenu == null && Game1.onScreenMenus != null)
             {
-                foreach (var menu in Game1.onScreenMenus)
-                {
-                    if (menu is Toolbar toolbar)
-                    {
-                        FieldInfo hoverItemField = typeof(Toolbar).GetField("hoverItem", BindingFlags.Instance | BindingFlags.NonPublic)!;
-                        hoverItem = hoverItemField.GetValue(toolbar) as Item;
-                    }
-                }
+                hoverItem = Game1.onScreenMenus.OfType<Toolbar>().Select(tb => tb.hoverItem).Where(hi => hi is not null).FirstOrDefault();
             }
 
             if (Game1.activeClickableMenu is GameMenu gameMenu && gameMenu.GetCurrentPage() is InventoryPage inventory)
