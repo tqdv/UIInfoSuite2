@@ -7,6 +7,7 @@ using StardewValley;
 using StardewValley.Buildings;
 using StardewValley.Menus;
 using System;
+using System.Linq;
 using UIInfoSuite2.Infrastructure;
 using UIInfoSuite2.Infrastructure.Extensions;
 
@@ -96,19 +97,19 @@ namespace UIInfoSuite2.UIElements
 
             if (remainingDays <= 0)
             {
-                Building b = Game1.getFarm().getBuildingUnderConstruction();
+                var building = Game1.getFarm().buildings.FirstOrDefault(b => b.isUnderConstruction(ignoreUpgrades: false));
 
-                if (b is not null)
+                if (building is not null)
                 {
-                    if (b.daysOfConstructionLeft.Value > b.daysUntilUpgrade.Value)
+                    if (building.daysOfConstructionLeft.Value > building.daysUntilUpgrade.Value)
                     {
-                        hoverText = String.Format(_helper.SafeGetString(LanguageKeys.RobinBuildingStatus), b.daysOfConstructionLeft.Value);
+                        hoverText = String.Format(_helper.SafeGetString(LanguageKeys.RobinBuildingStatus), building.daysOfConstructionLeft.Value);
                         return true;
                     }
                     else
                     {
                         // Add another translation string for this?
-                        hoverText = String.Format(_helper.SafeGetString(LanguageKeys.RobinBuildingStatus), b.daysUntilUpgrade.Value);
+                        hoverText = String.Format(_helper.SafeGetString(LanguageKeys.RobinBuildingStatus), building.daysUntilUpgrade.Value);
                         return true;
                     }
                 }

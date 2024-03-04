@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,28 +7,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.GameData.Crops;
 using StardewValley.Menus;
+using StardewValley.TerrainFeatures;
 using SObject = StardewValley.Object;
 
 namespace UIInfoSuite2.Infrastructure
 {
     public static class Tools
     {
-        public static void CreateSafeDelayedDialogue(string dialogue, int timer)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                Thread.Sleep(timer);
-
-                do
-                {
-                    Thread.Sleep(TimeSpan.FromSeconds(1));
-                }
-                while (Game1.activeClickableMenu is GameMenu);
-                Game1.setDialogue(dialogue, true);
-            });
-        }
-
         public static int GetWidthInPlayArea()
         {
             if (Game1.isOutdoorMapSmallerThanViewport())
@@ -59,13 +47,13 @@ namespace UIInfoSuite2.Infrastructure
         public static SObject? GetHarvest(Item item)
         {
             if (item is SObject seedsObject
-                && seedsObject.Category == StardewValley.Object.SeedsCategory
-                && seedsObject.ParentSheetIndex != Crop.mixedSeedIndex)
+                && seedsObject.Category == SObject.SeedsCategory
+                && seedsObject.ItemId != Crop.mixedSeedsId)
             {
-                if (seedsObject.isSapling())
+                if (seedsObject.IsFruitTreeSapling() && FruitTree.TryGetData(item.ItemId, out var fruitTreeData))
                 {
-                    var tree = new StardewValley.TerrainFeatures.FruitTree(seedsObject.ParentSheetIndex);
-                    return new SObject(tree.indexOfFruit.Value, 1);
+                    // TODO 1.6: It looks like 1.6 supports the idea of fruit tree having more than one kind of fruit.
+                    return ItemRegistry.Create<SObject>(fruitTreeData.Fruit[0].ItemId);
                 }
                 else if (ModEntry.DGA.IsCustomObject(item, out var dgaHelper))
                 {
@@ -89,14 +77,13 @@ namespace UIInfoSuite2.Infrastructure
                         return null;
                     }
                 }
-                else
+                else if (Crop.TryGetData(item.ItemId, out CropData cropData) && cropData.HarvestItemId is not null)
                 {
-                    var crop = new Crop(seedsObject.ParentSheetIndex, 0, 0);
-                    return new SObject(crop.indexOfHarvest.Value, 1);
+                    return ItemRegistry.Create<SObject>(cropData.HarvestItemId);
                 }
-            } else {
-                return null;
             }
+
+            return null;
         }
 
         public static int GetHarvestPrice(Item item)
@@ -130,20 +117,12 @@ namespace UIInfoSuite2.Infrastructure
 
             if (Game1.activeClickableMenu == null && Game1.onScreenMenus != null)
             {
-                foreach (var menu in Game1.onScreenMenus)
-                {
-                    if (menu is Toolbar toolbar)
-                    {
-                        FieldInfo hoverItemField = typeof(Toolbar).GetField("hoverItem", BindingFlags.Instance | BindingFlags.NonPublic);
-                        hoverItem = hoverItemField.GetValue(toolbar) as Item;
-                    }
-                }
+                hoverItem = Game1.onScreenMenus.OfType<Toolbar>().Select(tb => tb.hoverItem).Where(hi => hi is not null).FirstOrDefault();
             }
 
             if (Game1.activeClickableMenu is GameMenu gameMenu && gameMenu.GetCurrentPage() is InventoryPage inventory)
             {
-                FieldInfo hoveredItemField = typeof(InventoryPage).GetField("hoveredItem", BindingFlags.Instance | BindingFlags.NonPublic);
-                hoverItem = hoveredItemField.GetValue(inventory) as Item;
+                hoverItem = inventory.hoveredItem;
             }
 
             if (Game1.activeClickableMenu is ItemGrabMenu itemMenu)

@@ -11,7 +11,6 @@ namespace UIInfoSuite2.UIElements
     internal class ShowAccurateHearts : IDisposable
     {
         #region Properties
-        private string[] _friendNames;
         private SocialPage _socialPage;
         private IModEvents _events;
 
@@ -85,9 +84,6 @@ namespace UIInfoSuite2.UIElements
                     if (menu is SocialPage page)
                     {
                         _socialPage = page;
-                        _friendNames = _socialPage.names
-                            .Select(name => name.ToString())
-                            .ToArray();
                         break;
                     }
                 }
@@ -99,15 +95,16 @@ namespace UIInfoSuite2.UIElements
             int slotPosition = (int)typeof(SocialPage)
                                 .GetField(
                                     "slotPosition",
-                                    BindingFlags.Instance | BindingFlags.NonPublic)
-                                    .GetValue(_socialPage);
+                                    BindingFlags.Instance | BindingFlags.NonPublic)!
+                                .GetValue(_socialPage)!;
             int yOffset = 0;
 
-            for (int i = slotPosition; i < slotPosition + 5 && i < _friendNames.Length; ++i)
+            for (int i = slotPosition; i < slotPosition + 5 && i < _socialPage.SocialEntries.Count; ++i)
             {
-                if (Game1.player.friendshipData.TryGetValue(_friendNames[i], out Friendship friendshipValues)
+                string internalName = _socialPage.SocialEntries[i].InternalName;
+                if (Game1.player.friendshipData.TryGetValue(internalName, out Friendship friendshipValues)
                     && friendshipValues.Points > 0
-                    && friendshipValues.Points < Utility.GetMaximumHeartsForCharacter(Game1.getCharacterFromName(_friendNames[i])) * 250)
+                    && friendshipValues.Points < Utility.GetMaximumHeartsForCharacter(Game1.getCharacterFromName(internalName)) * 250)
                 {
                     int pointsToNextHeart = friendshipValues.Points % 250;
                     int numHearts = friendshipValues.Points / 250;
